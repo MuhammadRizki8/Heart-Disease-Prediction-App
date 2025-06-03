@@ -1,0 +1,65 @@
+groups:
+  - name: heart_disease_api_alerts
+    rules:
+      - alert: HighErrorRate
+        expr: heart_disease_api_error_rate_percent > 10
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: 'High error rate detected'
+          description: 'Error rate is {{ $value }}% which is above the threshold of 10%'
+
+      - alert: HighMemoryUsage
+        expr: heart_disease_api_memory_usage_bytes > 500000000 # 500MB
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: 'High memory usage detected'
+          description: 'Memory usage is {{ $value | humanize1024 }}B'
+
+      - alert: HighCPUUsage
+        expr: heart_disease_api_cpu_usage_percent > 80
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: 'High CPU usage detected'
+          description: 'CPU usage is {{ $value }}% which is above 80%'
+
+      - alert: ModelNotLoaded
+        expr: heart_disease_model_loading_status == 0
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: 'ML Model not loaded'
+          description: 'Model {{ $labels.model }} is not loaded'
+
+      - alert: HighRiskPredictionsSpike
+        expr: increase(heart_disease_high_risk_predictions_total[5m]) > 20
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: 'Spike in high-risk predictions'
+          description: '{{ $value }} high-risk predictions in the last 5 minutes for model {{ $labels.model }}'
+
+      - alert: APIResponseTimeSlow
+        expr: histogram_quantile(0.95, heart_disease_prediction_duration_seconds_bucket) > 2
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: 'API response time is slow'
+          description: '95th percentile response time is {{ $value }}s for endpoint {{ $labels.endpoint }}'
+
+      - alert: LowModelAccuracy
+        expr: heart_disease_model_accuracy < 0.8
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: 'Model accuracy below threshold'
+          description: 'Model {{ $labels.model }} accuracy is {{ $value }} which is below 80%'

@@ -1,0 +1,40 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Logs
+*.log
+logs/
+
+# Virtual environment (jika ada)
+venv/
+env/
+.venv/
+
+# Python specific
+*.egg-info/
+*.egg
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Pytest cache
+.pytest_cache/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# VSCode settings (kalau pakai)
+.vscode/
+
+# Grafana dashboard JSON (kalau kamu mau commit bisa dihapus)
+# grafana/
+
+# Prometheus config and rules (kalau kamu mau commit bisa dihapus)
+# prometheus.yml
+# alert_rules.yml
+
+

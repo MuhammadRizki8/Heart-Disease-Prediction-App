@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Heart Disease Prediction</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'medical-blue': '#0066cc',
+              'medical-green': '#28a745',
+              'medical-red': '#dc3545',
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-lg border-b-4 border-medical-blue">
+      <div class="container mx-auto px-6 py-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 bg-medical-blue rounded-full flex items-center justify-center">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+              </svg>
+            </div>
+            <h1 class="text-2xl font-bold text-gray-800">Heart Disease Prediction</h1>
+          </div>
+          <div class="flex items-center space-x-4">
+            <div id="api-status" class="px-3 py-1 rounded-full text-sm font-medium">
+              <span class="flex items-center">
+                <div class="w-2 h-2 rounded-full mr-2"></div>
+                <span>Checking...</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-8">
+      <!-- Prediction Form -->
+      <div class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-xl shadow-xl overflow-hidden">
+          <div class="bg-gradient-to-r from-medical-blue to-blue-600 px-8 py-6">
+            <h2 class="text-2xl font-bold text-white">Patient Information</h2>
+            <p class="text-blue-100 mt-2">Enter patient data for heart disease risk assessment</p>
+          </div>
+
+          <form id="prediction-form" class="p-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <!-- Age -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Age <span class="text-gray-500">(28-77)</span></label>
+                <input type="number" name="Age" required min="28" max="77" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-blue focus:border-transparent transition-all" />
+              </div>
+
+              <!-- Sex -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Sex</label>
+                <select name="Sex" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-blue focus:border-transparent transition-all">
+                  <option value="">Select Sex</option>
+                  <option value="M">Male</option>
+                  <option value="F">Female</option>
+                </select>
+              </div>
+
+              <!-- Chest Pain Type -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Chest Pain Type</label>
+                <select name="ChestPainType" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-blue focus:border-transparent transition-all">
+                  <option value="">Select Type</option>
+                  <option value="TA">Typical Angina</option>
+                  <option value="ATA">Atypical Angina</option>
+                  <option value="NAP">Non-Anginal Pain</option>
+                  <option value="ASY">Asymptomatic</option>
+                </select>
+              </div>
+
+              <!-- Resting BP -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Resting Blood Pressure <span class="text-gray-500">(94-200)</span></label>
+                <input type="number" name="RestingBP" required min="94" max="200" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-blue focus:border-transparent transition-all" />
+              </div>
+
+              <!-- Cholesterol -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Cholesterol <span class="text-gray-500">(85-603)</span></label>
+                <input type="number" name="Cholesterol" required min="85" max="603" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-blue focus:border-transparent transition-all" />
+              </div>
+
+              <!-- Fasting Blood Sugar -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Fasting Blood Sugar > 120</label>
+                <select name="FastingBS" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-blue focus:border-transparent transition-all">
+                  <option value="">Select</option>
+                  <option value="1">Yes</option>
+                  <option value="0">No</option>
+                </select>
+              </div>
+
+              <!-- Resting ECG -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Resting ECG</label>
+                <select name="RestingECG" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-blue focus:border-transparent transition-all">
+                  <option value="">Select ECG</option>
+                  <option value="Normal">Normal</option>
+                  <option value="ST">ST-T Abnormality</option>
+                  <option value="LVH">LV Hypertrophy</option>
+                </select>
+              </div>
+
+              <!-- Max Heart Rate -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Max Heart Rate <span class="text-gray-500">(60-202)</span></label>
+                <input type="number" name="MaxHR" required min="60" max="202" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-blue focus:border-transparent transition-all" />
+              </div>
+
+              <!-- Exercise Angina -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Exercise Induced Angina</label>
+                <select name="ExerciseAngina" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-blue focus:border-transparent transition-all">
+                  <option value="">Select</option>
+                  <option value="Y">Yes</option>
+                  <option value="N">No</option>
+                </select>
+              </div>
+
+              <!-- Old Peak -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Old Peak <span class="text-gray-500">(-2.6 to 6.2)</span></label>
+                <input type="number" name="Oldpeak" required min="-2.6" max="6.2" step="0.1" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-blue focus:border-transparent transition-all" />
+              </div>
+
+              <!-- ST Slope -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">ST Slope</label>
+                <select name="ST_Slope" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-blue focus:border-transparent transition-all">
+                  <option value="">Select Slope</option>
+                  <option value="Up">Upsloping</option>
+                  <option value="Flat">Flat</option>
+                  <option value="Down">Downsloping</option>
+                </select>
+              </div>
+
+              <!-- Model Selection -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Model</label>
+                <select name="model" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-blue focus:border-transparent transition-all">
+                  <option value="RandomForest">Random Forest</option>
+                  <option value="LogisticRegression">Logistic Regression</option>
+                  <option value="SVM">Support Vector Machine</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="mt-8 flex justify-center">
+              <button
+                type="submit"
+                class="bg-gradient-to-r from-medical-blue to-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-blue-700 focus:ring-4 focus:ring-blue-200 transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span class="flex items-center">
+                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                  Predict Risk
+                </span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results-section" class="mt-8 hidden">
+          <div class="bg-white rounded-xl shadow-xl overflow-hidden">
+            <div class="bg-gradient-to-r from-green-500 to-emerald-600 px-8 py-6">
+              <h3 class="text-2xl font-bold text-white">Prediction Results</h3>
+            </div>
+            <div id="results-content" class="p-8">
+              <!-- Results will be populated here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div id="loading" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div class="bg-white rounded-lg p-8 flex items-center space-x-4">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-medical-blue"></div>
+            <span class="text-lg font-medium">Analyzing patient data...</span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      const API_BASE_URL = 'http://localhost:5000';
+
+      // Check API status
+      async function checkApiStatus() {
+        try {
+          const response = await fetch(`${API_BASE_URL}/health`);
+          const statusElement = document.getElementById('api-status');
+
+          if (response.ok) {
+            statusElement.innerHTML = `
+                        <span class="flex items-center text-green-700 bg-green-100 px-3 py-1 rounded-full">
+                            <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                            <span>API Online</span>
+                        </span>
+                    `;
+          } else {
+            throw new Error('API not responding');
+          }
+        } catch (error) {
+          const statusElement = document.getElementById('api-status');
+          statusElement.innerHTML = `
+                    <span class="flex items-center text-red-700 bg-red-100 px-3 py-1 rounded-full">
+                        <div class="w-2 h-2 bg-red-500 rounded-full mr-2"></div>
+                        <span>API Offline</span>
+                    </span>
+                `;
+        }
+      }
+
+      // Handle form submission
+      document.getElementById('prediction-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(e.target);
+        const data = {};
+
+        // Convert form data to object with proper types
+        for (let [key, value] of formData.entries()) {
+          if (key === 'model') {
+            // Model is handled separately
+            continue;
+          } else if (['Sex', 'ChestPainType', 'RestingECG', 'ExerciseAngina', 'ST_Slope'].includes(key)) {
+            // Keep as string for categorical fields
+            data[key] = value;
+          } else if (key === 'FastingBS') {
+            // Convert to number for FastingBS
+            data[key] = parseInt(value);
+          } else {
+            // Convert to number for numeric fields
+            data[key] = parseFloat(value);
+          }
+        }
+
+        const selectedModel = formData.get('model') || 'RandomForest';
+
+        // Show loading
+        document.getElementById('loading').classList.remove('hidden');
+
+        try {
+          const requestBody = {
+            model: selectedModel,
+            data: data,
+          };
+
+          console.log('Sending request:', JSON.stringify(requestBody, null, 2));
+
+          const response = await fetch(`${API_BASE_URL}/predict`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+          });
+
+          const result = await response.json();
+
+          if (response.ok && result.status === 'success') {
+            displayResults(result.data);
+          } else {
+            throw new Error(result.message || 'Prediction failed');
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          displayError(error.message);
+        } finally {
+          document.getElementById('loading').classList.add('hidden');
+        }
+      });
+
+      function displayResults(data) {
+        const resultsSection = document.getElementById('results-section');
+        const resultsContent = document.getElementById('results-content');
+
+        const prediction = data.prediction_label;
+        const probability = data.probability;
+        const riskLevel = prediction === 'Heart Disease' ? 'HIGH' : 'LOW';
+        const riskColor = prediction === 'Heart Disease' ? 'red' : 'green';
+        const riskProb = probability ? (probability['Heart Disease'] * 100).toFixed(1) : 'N/A';
+
+        resultsContent.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="text-center">
+                        <div class="w-32 h-32 mx-auto mb-4 rounded-full flex items-center justify-center ${riskColor === 'red' ? 'bg-red-100' : 'bg-green-100'}">
+                            <div class="w-20 h-20 rounded-full flex items-center justify-center ${riskColor === 'red' ? 'bg-red-500' : 'bg-green-500'}">
+                                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    ${
+                                      riskColor === 'red'
+                                        ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>'
+                                        : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>'
+                                    }
+                                </svg>
+                            </div>
+                        </div>
+                        <h4 class="text-2xl font-bold ${riskColor === 'red' ? 'text-red-600' : 'text-green-600'} mb-2">
+                            ${riskLevel} RISK
+                        </h4>
+                        <p class="text-gray-600 mb-4">Heart Disease Probability: <strong>${riskProb}%</strong></p>
+                        <div class="w-full bg-gray-200 rounded-full h-3">
+                            <div class="h-3 rounded-full ${riskColor === 'red' ? 'bg-red-500' : 'bg-green-500'}" 
+                                 style="width: ${riskProb}%"></div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-xl font-bold text-gray-800 mb-4">Recommendation</h4>
+                        <div class="space-y-3">
+                            ${
+                              prediction === 'Heart Disease'
+                                ? `
+                                <div class="flex items-start space-x-3 p-4 bg-red-50 rounded-lg border-l-4 border-red-500">
+                                    <svg class="w-6 h-6 text-red-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                                    </svg>
+                                    <div>
+                                        <p class="font-semibold text-red-800">High Risk Detected</p>
+                                        <p class="text-red-700 text-sm">Immediate consultation with a cardiologist is recommended.</p>
+                                    </div>
+                                </div>
+                                <div class="text-sm text-gray-600 space-y-2">
+                                    <p>• Schedule ECG and stress test</p>
+                                    <p>• Monitor blood pressure regularly</p>
+                                    <p>• Consider lifestyle modifications</p>
+                                    <p>• Follow up with healthcare provider</p>
+                                </div>
+                            `
+                                : `
+                                <div class="flex items-start space-x-3 p-4 bg-green-50 rounded-lg border-l-4 border-green-500">
+                                    <svg class="w-6 h-6 text-green-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    <div>
+                                        <p class="font-semibold text-green-800">Low Risk</p>
+                                        <p class="text-green-700 text-sm">Continue maintaining a healthy lifestyle.</p>
+                                    </div>
+                                </div>
+                                <div class="text-sm text-gray-600 space-y-2">
+                                    <p>• Maintain regular exercise routine</p>
+                                    <p>• Follow balanced diet</p>
+                                    <p>• Regular health check-ups</p>
+                                    <p>• Monitor risk factors</p>
+                                </div>
+                            `
+                            }
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-8 p-4 bg-gray-50 rounded-lg">
+                    <p class="text-sm text-gray-600">
+                        <strong>Disclaimer:</strong> This prediction is for informational purposes only and should not replace professional medical advice. 
+                        Always consult with a qualified healthcare provider for medical decisions.
+                    </p>
+                </div>
+            `;
+
+        resultsSection.classList.remove('hidden');
+        resultsSection.scrollIntoView({ behavior: 'smooth' });
+      }
+
+      function displayError(message) {
+        const resultsSection = document.getElementById('results-section');
+        const resultsContent = document.getElementById('results-content');
+
+        resultsContent.innerHTML = `
+                <div class="text-center">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
+                        <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h4 class="text-xl font-bold text-red-600 mb-2">Prediction Error</h4>
+                    <p class="text-gray-600">${message}</p>
+                    <p class="text-sm text-gray-500 mt-2">Please check your input data and try again.</p>
+                </div>
+            `;
+
+        resultsSection.classList.remove('hidden');
+        resultsSection.scrollIntoView({ behavior: 'smooth' });
+      }
+
+      // Check API status on page load
+      checkApiStatus();
+
+      // Check API status every 30 seconds
+      setInterval(checkApiStatus, 30000);
+    </script>
+  </body>
+</html>

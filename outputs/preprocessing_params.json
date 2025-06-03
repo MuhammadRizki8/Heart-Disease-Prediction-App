@@ -1,0 +1,23 @@
+{
+    "cholesterol_median": 237.0,
+    "restingbp_median": 130.0,
+    "numerical_columns": [
+        "Age",
+        "RestingBP",
+        "Cholesterol",
+        "MaxHR",
+        "Oldpeak"
+    ],
+    "categorical_columns": [
+        "Sex",
+        "ChestPainType",
+        "RestingECG",
+        "ExerciseAngina",
+        "ST_Slope"
+    ],
+    "binary_columns": [
+        "Sex",
+        "ExerciseAngina"
+    ],
+    "best_model": "LogisticRegression"
+}

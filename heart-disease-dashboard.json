@@ -1,0 +1,224 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "Heart Disease Prediction API Monitoring - rizki_muhammad",
+    "tags": ["heart-disease", "ml-api", "monitoring"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "API Request Rate",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "rate(heart_disease_prediction_requests_total[5m])",
+            "legendFormat": "{{endpoint}} - {{status}}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "reqps",
+            "color": {
+              "mode": "palette-classic"
+            }
+          }
+        },
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 }
+      },
+      {
+        "id": 2,
+        "title": "Total Requests",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "heart_disease_prediction_requests_total",
+            "legendFormat": "{{endpoint}} - {{status}}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "color": {
+              "mode": "palette-classic"
+            }
+          }
+        },
+        "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 }
+      },
+      {
+        "id": 3,
+        "title": "Response Time (95th Percentile)",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(heart_disease_prediction_duration_seconds_bucket[5m]))",
+            "legendFormat": "95th percentile",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s",
+            "color": {
+              "mode": "palette-classic"
+            }
+          }
+        },
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 }
+      },
+      {
+        "id": 4,
+        "title": "Average Response Time",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "rate(heart_disease_prediction_duration_seconds_sum[5m]) / rate(heart_disease_prediction_duration_seconds_count[5m])",
+            "legendFormat": "Average Response Time",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s",
+            "color": {
+              "mode": "palette-classic"
+            }
+          }
+        },
+        "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 }
+      },
+      {
+        "id": 5,
+        "title": "Prediction Results Distribution",
+        "type": "piechart",
+        "targets": [
+          {
+            "expr": "heart_disease_prediction_results_total",
+            "legendFormat": "{{result}}",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "reduceOptions": {
+            "values": false,
+            "calcs": ["lastNotNull"],
+            "fields": ""
+          },
+          "pieType": "pie",
+          "tooltip": {
+            "mode": "single"
+          },
+          "legend": {
+            "displayMode": "visible",
+            "placement": "bottom"
+          }
+        },
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 16 }
+      },
+      {
+        "id": 6,
+        "title": "High Risk Predictions",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "rate(heart_disease_high_risk_predictions_total[5m])",
+            "legendFormat": "{{model}} High Risk Rate",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "reqps",
+            "color": {
+              "mode": "palette-classic"
+            }
+          }
+        },
+        "gridPos": { "h": 8, "w": 12, "x": 12, "y": 16 }
+      },
+      {
+        "id": 7,
+        "title": "Patient Age Distribution",
+        "type": "histogram",
+        "targets": [
+          {
+            "expr": "rate(heart_disease_patient_age_distribution_bucket[5m])",
+            "legendFormat": "Age {{le}}",
+            "refId": "A"
+          }
+        ],
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 24 }
+      },
+      {
+        "id": 8,
+        "title": "Batch Size Distribution",
+        "type": "histogram",
+        "targets": [
+          {
+            "expr": "heart_disease_batch_prediction_size_bucket",
+            "legendFormat": "Batch Size {{le}}",
+            "refId": "A"
+          }
+        ],
+        "gridPos": { "h": 8, "w": 12, "x": 12, "y": 24 }
+      },
+      {
+        "id": 9,
+        "title": "Request Rate Over Time",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "rate(heart_disease_prediction_requests_total[1m])",
+            "legendFormat": "{{endpoint}} - {{model}}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "reqps",
+            "color": {
+              "mode": "palette-classic"
+            }
+          }
+        },
+        "gridPos": { "h": 8, "w": 24, "x": 0, "y": 32 }
+      },
+      {
+        "id": 10,
+        "title": "Service Uptime",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "up{job=\"heart-disease-api\"}",
+            "legendFormat": "API Status",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [
+              { "type": "value", "value": "0", "text": "DOWN", "color": "red" },
+              { "type": "value", "value": "1", "text": "UP", "color": "green" }
+            ],
+            "thresholds": {
+              "steps": [
+                { "color": "red", "value": 0 },
+                { "color": "green", "value": 1 }
+              ]
+            }
+          }
+        },
+        "gridPos": { "h": 4, "w": 12, "x": 0, "y": 40 }
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "refresh": "5s",
+    "schemaVersion": 30,
+    "version": 1
+  }
+}
